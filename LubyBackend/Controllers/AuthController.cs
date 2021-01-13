@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Models;
 using Repositorys.Context;
 using Repositorys.Core;
+using Repositorys.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,11 @@ namespace LubyBackend.Controllers
     [Route("v1/auth")]
     public class AuthController : Controller
     {
-        DatabaseContext db;
-        public AuthController(DatabaseContext db)
+        private readonly IUserRepository userRepository;
+
+        public AuthController(IUserRepository userRepository)
         {
-            this.db = db;
+            this.userRepository = userRepository;
         }
 
         [HttpPost]
@@ -28,8 +30,7 @@ namespace LubyBackend.Controllers
         public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
         {
             var user = UserRepository.GetUser(model.Login, model.Password);
-
-            var list = db.User.ToList();
+            var usert = userRepository.FindUser(model.Login, model.Password);
 
             if (user == null)
                 return NotFound(new { message = "Usuário ou senha inválidos" });

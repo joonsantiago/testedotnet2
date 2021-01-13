@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Repositorys.Context;
 using Repositorys.Core;
+using Repositorys.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +57,10 @@ namespace LubyBackend
                     ValidateAudience = false
                 };
             });
+
+            //Injeção de dependência no ASP.NET
+            services.AddScoped<DatabaseContext, DatabaseContext>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
         }
 

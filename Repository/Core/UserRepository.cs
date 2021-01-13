@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.Dto;
 using Repositorys.Context;
 using Repositorys.Interfaces;
 using System;
@@ -10,7 +11,7 @@ using System.Text;
 
 namespace Repositorys.Core
 {
-    public class UserRepository: IUserRepository, IBaseRepository<User>
+    public class UserRepository: IUserRepository
     {
         private readonly DatabaseContext databaseContext;
         public UserRepository(DatabaseContext databaseContext)
@@ -18,10 +19,6 @@ namespace Repositorys.Core
             this.databaseContext = databaseContext;
         }
 
-        /// <summary>
-        /// Save or Update data User
-        /// </summary>
-        /// <param name="user">Object User for saver or update</param>
         public void Save(User user)
         {
             using(var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
@@ -39,35 +36,41 @@ namespace Repositorys.Core
             }
         }
 
-        /// <summary>
-        /// List all Users
-        /// </summary>
-        /// <returns></returns>
-        public List<User> GetList()
+        public List<UserDto> GetList()
         {
             using(databaseContext)
             {
-                return databaseContext.User.ToList();
+                var query = from u in databaseContext.User
+                            select new UserDto
+                            {
+                                Id = u.Id,
+                                Login = u.Login,
+                                Email = u.Email,
+                                Name = u.Name,
+                                Role = u.Role
+                            };
+                return query.ToList();
             }
         }
 
-        /// <summary>
-        /// Find User by Id
-        /// </summary>
-        /// <param name="id">Value of Id for search</param>
-        /// <returns></returns>
-        public User GetById(int id)
+        public UserDto GetById(int id)
         {
             using (databaseContext)
             {
-                return databaseContext.User.Where(x => x.Id == id).FirstOrDefault();
+                var query = from u in databaseContext.User
+                            where u.Id == id
+                            select new UserDto
+                            {
+                                Id = u.Id,
+                                Login = u.Login,
+                                Email = u.Email,
+                                Name = u.Name,
+                                Role = u.Role
+                            };
+                return query.FirstOrDefault();
             }
         }
 
-        /// <summary>
-        /// Delete User
-        /// </summary>
-        /// <param name="item">Object User for delete</param>
         public void Delete(User item)
         {
             if(item.Id > 0)
@@ -81,12 +84,6 @@ namespace Repositorys.Core
             }
         }
 
-        /// <summary>
-        /// Find user with logiin and password
-        /// </summary>
-        /// <param name="login">Login of User</param>
-        /// <param name="password">Password of User</param>
-        /// <returns></returns>
         public User FindUser(string login, string password)
         {
             using (databaseContext)

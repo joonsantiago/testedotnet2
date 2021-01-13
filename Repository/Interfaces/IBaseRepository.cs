@@ -9,5 +9,6 @@ namespace Repositorys.Interfaces
         void Save(T item);
         List<T> GetList();
         T GetById(int id);
+        void Delete(T item);
     }
 }

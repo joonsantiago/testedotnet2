@@ -8,13 +8,14 @@ using System.Data;
 using System.Text;
 using System.Linq;
 
+
 namespace Repositorys.Core
 {
-    public class ProjectsRepository: IBaseRepository<Project>
+    public class WorkHourRepository : IBaseRepository<WorkHour>
     {
 
         private readonly DatabaseContext databaseContext;
-        public ProjectsRepository(DatabaseContext databaseContext)
+        public WorkHourRepository(DatabaseContext databaseContext)
         {
             this.databaseContext = databaseContext;
         }
@@ -23,13 +24,13 @@ namespace Repositorys.Core
         /// Save or Update data User
         /// </summary>
         /// <param name="item">Object User for saver or update</param>
-        public void Save(Project item)
+        public void Save(WorkHour item)
         {
             using (var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 if (item.Id == 0)
                 {
-                    databaseContext.Project.Add(item);
+                    databaseContext.WorkHour.Add(item);
                 }
                 else
                 {
@@ -41,35 +42,35 @@ namespace Repositorys.Core
         }
 
         /// <summary>
-        /// List all Projects
+        /// List all WorkHours
         /// </summary>
         /// <returns></returns>
-        public List<Project> GetList()
+        public List<WorkHour> GetList()
         {
             using (databaseContext)
             {
-                return databaseContext.Project.ToList();
+                return databaseContext.WorkHour.ToList();
             }
         }
 
         /// <summary>
-        /// Find Project by Id
+        /// Find WorkHour by Id
         /// </summary>
         /// <param name="id">Value of Id for search</param>
         /// <returns></returns>
-        public Project GetById(int id)
+        public WorkHour GetById(int id)
         {
             using (databaseContext)
             {
-                return databaseContext.Project.Where(x => x.Id == id).FirstOrDefault();
+                return databaseContext.WorkHour.Where(x => x.Id == id).FirstOrDefault();
             }
         }
 
         /// <summary>
-        /// Delete Project
+        /// Delete WorkHour
         /// </summary>
-        /// <param name="item">Object Project for delete</param>
-        public void Delete(Project item)
+        /// <param name="item">Object WorkHour for delete</param>
+        public void Delete(WorkHour item)
         {
             if (item.Id > 0)
             {

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Models;
+using Repositorys.Context;
 using Repositorys.Core;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,11 @@ namespace LubyBackend.Controllers
     [Route("v1/auth")]
     public class AuthController : Controller
     {
+        DatabaseContext db;
+        public AuthController(DatabaseContext db)
+        {
+            this.db = db;
+        }
 
         [HttpPost]
         [Route("login")]
@@ -22,6 +28,8 @@ namespace LubyBackend.Controllers
         public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
         {
             var user = UserRepository.GetUser(model.Login, model.Password);
+
+            var list = db.User.ToList();
 
             if (user == null)
                 return NotFound(new { message = "Usuário ou senha inválidos" });

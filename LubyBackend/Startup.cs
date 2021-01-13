@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Repositorys.Context;
 using Repositorys.Core;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,10 @@ namespace LubyBackend
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            //configuration database connection
+            var connection = Configuration["mysql:url"];
+            services.AddDbContext<DatabaseContext>(options => options.UseMySql(connection));
 
             //configuration JWT token
             var key = Encoding.ASCII.GetBytes(Security.Secret.key);

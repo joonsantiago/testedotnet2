@@ -14,5 +14,6 @@ namespace Repositorys.Context
         }
 
         public DbSet<User> User { get; set; }
+        public DbSet<Project> Project { get; set; }
     }
 }

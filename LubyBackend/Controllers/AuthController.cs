@@ -17,11 +17,13 @@ namespace LubyBackend.Controllers
     [Route("v1/auth")]
     public class AuthController : Controller
     {
+        public IConfiguration Configuration;
         private readonly IUserRepository userRepository;
 
-        public AuthController(IUserRepository userRepository)
+        public AuthController(IUserRepository userRepository, IConfiguration configuration)
         {
             this.userRepository = userRepository;
+            this.Configuration = configuration;
         }
 
         [HttpPost]
@@ -29,8 +31,19 @@ namespace LubyBackend.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
         {
-            var user = UserRepository.GetUser(model.Login, model.Password);
-            var usert = userRepository.FindUser(model.Login, model.Password);
+
+            string header_encrypted = Request.Headers["encrypted"];
+            bool encripted = !string.IsNullOrEmpty(header_encrypted) ? bool.Parse(header_encrypted) : false;
+
+            string hash = model.Password;
+
+            if (!encripted)
+            {
+                int workfactor = Int32.Parse(Configuration["bcrypt:workfactor"]);
+                hash = BCryptService.GenerateBCryptHash(hash, workfactor);
+            }
+
+            var user = userRepository.FindUser(model.Login, hash);
 
             if (user == null)
                 return NotFound(new { message = "Usuário ou senha inválidos" });

@@ -5,15 +5,16 @@ using Repositorys.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
+using System.Linq;
 
 namespace Repositorys.Core
 {
-    public class UserRepository: IUserRepository, IBaseRepository<User>
+    public class ProjectsRepository: IBaseRepository<Project>
     {
+
         private readonly DatabaseContext databaseContext;
-        public UserRepository(DatabaseContext databaseContext)
+        public ProjectsRepository(DatabaseContext databaseContext)
         {
             this.databaseContext = databaseContext;
         }
@@ -22,13 +23,13 @@ namespace Repositorys.Core
         /// Save or Update data User
         /// </summary>
         /// <param name="user">Object User for saver or update</param>
-        public void Save(User user)
+        public void Save(Project user)
         {
-            using(var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using (var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
-                if(user.Id == 0)
+                if (user.Id == 0)
                 {
-                    databaseContext.User.Add(user);
+                    databaseContext.Project.Add(user);
                 }
                 else
                 {
@@ -40,37 +41,37 @@ namespace Repositorys.Core
         }
 
         /// <summary>
-        /// List all Users
+        /// List all Projects
         /// </summary>
         /// <returns></returns>
-        public List<User> GetList()
-        {
-            using(databaseContext)
-            {
-                return databaseContext.User.ToList();
-            }
-        }
-
-        /// <summary>
-        /// Find User by Id
-        /// </summary>
-        /// <param name="id">Value of Id for search</param>
-        /// <returns></returns>
-        public User GetById(int id)
+        public List<Project> GetList()
         {
             using (databaseContext)
             {
-                return databaseContext.User.Where(x => x.Id == id).FirstOrDefault();
+                return databaseContext.Project.ToList();
             }
         }
 
         /// <summary>
-        /// Delete User
+        /// Find Project by Id
         /// </summary>
-        /// <param name="item">Object User for delete</param>
-        public void Delete(User item)
+        /// <param name="id">Value of Id for search</param>
+        /// <returns></returns>
+        public Project GetById(int id)
         {
-            if(item.Id > 0)
+            using (databaseContext)
+            {
+                return databaseContext.Project.Where(x => x.Id == id).FirstOrDefault();
+            }
+        }
+
+        /// <summary>
+        /// Delete Project
+        /// </summary>
+        /// <param name="item">Object Project for delete</param>
+        public void Delete(Project item)
+        {
+            if (item.Id > 0)
             {
                 using (var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
@@ -80,20 +81,5 @@ namespace Repositorys.Core
                 }
             }
         }
-
-        /// <summary>
-        /// Find user with logiin and password
-        /// </summary>
-        /// <param name="login">Login of User</param>
-        /// <param name="password">Password of User</param>
-        /// <returns></returns>
-        public User FindUser(string login, string password)
-        {
-            using (databaseContext)
-            {
-                return databaseContext.User.Where(x => x.Login == login && x.Password == password).FirstOrDefault();
-            }
-        }
-
     }
 }

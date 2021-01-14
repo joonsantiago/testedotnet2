@@ -43,7 +43,7 @@ namespace LubyBackend.Controllers
                 hash = BCryptService.GenerateBCryptHash(hash, workfactor);
             }
 
-            var user = userRepository.FindUser(model.Login, hash);
+            var user = userRepository.GetUser(model.Login.ToLower(), hash);
 
             if (user == null)
                 return NotFound(new { message = "Usuário ou senha inválidos" });

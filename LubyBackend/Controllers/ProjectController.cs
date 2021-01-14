@@ -9,18 +9,23 @@ using Models;
 using Microsoft.AspNetCore.Authorization;
 using Models.Dto;
 using LubyBackend.Utils;
+using System.Security.Claims;
 
 namespace LubyBackend.Controllers
 {
     [ApiController]
     [Route("v1/projects")]
-    [Authorize]
     public class ProjectController : Controller
     {
         IProjectRepository projectRepository;
+        IUserRepository userRepository;
 
-        public ProjectController(IProjectRepository projectRepository)
+
+        public ProjectController(IUserRepository userRepository, IProjectRepository projectRepository)
         {
+            this.userRepository = userRepository;       
+            //this.userLoged = this.userRepository.GetUser(email);
+
             this.projectRepository = projectRepository;
         }
 
@@ -33,9 +38,12 @@ namespace LubyBackend.Controllers
 
         [HttpGet]
         [Route("")]
+        [Authorize]
         public Pagination<Project> GetAll([FromQuery(Name = "page")] int page = 0, [FromQuery(Name = "size")] int sizePage = 15)
         {
             int skip = page * sizePage;
+
+            string id = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
 
             int total = projectRepository.Count();
             List<Project> list = projectRepository.GetList(skip, sizePage);

@@ -9,12 +9,12 @@ namespace Repositorys.Interfaces
     public interface IUserRepository
     {
         /// <summary>
-        /// Find user with logiin and password
+        /// Find user with login and password
         /// </summary>
         /// <param name="login">Login of User</param>
         /// <param name="password">Password of User</param>
         /// <returns></returns>
-        User FindUser(string login, string password);
+        User GetUser(string login, string password);
 
         /// <summary>
         /// Save or Update data User
@@ -53,5 +53,12 @@ namespace Repositorys.Interfaces
         /// Count all User
         /// </summary>
         int Count();
+
+        /// <summary>
+        /// Find user with email
+        /// </summary>
+        /// <param name="email">E-mail of User</param>
+        /// <returns></returns>
+        UserDto GetUser(string email);
     }
 }

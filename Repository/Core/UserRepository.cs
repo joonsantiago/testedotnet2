@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Repositorys.Core
 {
-    public class UserRepository: IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly DatabaseContext databaseContext;
         public UserRepository(DatabaseContext databaseContext)
@@ -21,9 +21,9 @@ namespace Repositorys.Core
 
         public void Save(User user)
         {
-            using(var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using (var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
-                if(user.Id == 0)
+                if (user.Id == 0)
                 {
                     databaseContext.User.Add(user);
                 }
@@ -81,7 +81,7 @@ namespace Repositorys.Core
 
         public void Delete(User item)
         {
-            if(item.Id > 0)
+            if (item.Id > 0)
             {
                 using (var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
@@ -92,16 +92,30 @@ namespace Repositorys.Core
             }
         }
 
-        public User FindUser(string login, string password)
+        public User GetUser(string login, string password)
         {
-            return databaseContext.User.Where(x => x.Login == login && x.Password == password).FirstOrDefault();   
+            return databaseContext.User.Where(x => x.Login == login && x.Password == password).FirstOrDefault();
         }
 
         public int Count()
-        {            
+        {
             return databaseContext.User.Count();
-            
-        }
 
+        }
+        public UserDto GetUser(string email)
+        {
+            var query = from u in databaseContext.User
+                        where u.Email == email
+                        select new UserDto
+                        {
+                            Id = u.Id,
+                            Login = u.Login,
+                            Email = u.Email,
+                            Name = u.Name,
+                            Role = u.Role
+                        };
+
+            return query.FirstOrDefault();
+        }
     }
 }

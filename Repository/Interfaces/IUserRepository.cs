@@ -29,6 +29,14 @@ namespace Repositorys.Interfaces
         List<UserDto> GetList();
 
         /// <summary>
+        /// List all Users with pagination
+        /// </summary>
+        /// <param name="skip"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        List<UserDto> GetList(int skip, int size);
+
+        /// <summary>
         /// Find User by Id
         /// </summary>
         /// <param name="id">Value of Id for search</param>
@@ -40,5 +48,10 @@ namespace Repositorys.Interfaces
         /// </summary>
         /// <param name="item">Object User for delete</param>
         void Delete(User item);
+
+        /// <summary>
+        /// Count all User
+        /// </summary>
+        int Count();
     }
 }

@@ -38,37 +38,45 @@ namespace Repositorys.Core
 
         public List<UserDto> GetList()
         {
-            using(databaseContext)
-            {
-                var query = from u in databaseContext.User
-                            select new UserDto
-                            {
-                                Id = u.Id,
-                                Login = u.Login,
-                                Email = u.Email,
-                                Name = u.Name,
-                                Role = u.Role
-                            };
-                return query.ToList();
-            }
+            var query = from u in databaseContext.User
+                        select new UserDto
+                        {
+                            Id = u.Id,
+                            Login = u.Login,
+                            Email = u.Email,
+                            Name = u.Name,
+                            Role = u.Role
+                        };
+            return query.ToList();
+        }
+
+        public List<UserDto> GetList(int skip, int size)
+        {
+            var query = from u in databaseContext.User
+                        select new UserDto
+                        {
+                            Id = u.Id,
+                            Login = u.Login,
+                            Email = u.Email,
+                            Name = u.Name,
+                            Role = u.Role
+                        };
+            return query.Skip(skip).Take(size).ToList();
         }
 
         public UserDto GetById(int id)
         {
-            using (databaseContext)
-            {
-                var query = from u in databaseContext.User
-                            where u.Id == id
-                            select new UserDto
-                            {
-                                Id = u.Id,
-                                Login = u.Login,
-                                Email = u.Email,
-                                Name = u.Name,
-                                Role = u.Role
-                            };
-                return query.FirstOrDefault();
-            }
+            var query = from u in databaseContext.User
+                        where u.Id == id
+                        select new UserDto
+                        {
+                            Id = u.Id,
+                            Login = u.Login,
+                            Email = u.Email,
+                            Name = u.Name,
+                            Role = u.Role
+                        };
+            return query.FirstOrDefault();
         }
 
         public void Delete(User item)
@@ -86,10 +94,13 @@ namespace Repositorys.Core
 
         public User FindUser(string login, string password)
         {
-            using (databaseContext)
-            {
-                return databaseContext.User.Where(x => x.Login == login && x.Password == password).FirstOrDefault();
-            }
+            return databaseContext.User.Where(x => x.Login == login && x.Password == password).FirstOrDefault();   
+        }
+
+        public int Count()
+        {            
+            return databaseContext.User.Count();
+            
         }
 
     }

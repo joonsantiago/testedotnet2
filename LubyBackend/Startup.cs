@@ -58,8 +58,8 @@ namespace LubyBackend
                 };
             });
 
-            //Injeção de dependência
-
+            //Injeção de dependência no ASP.NET
+            services.AddScoped<DatabaseContext, DatabaseContext>();
             services.AddTransient<IUserRepository, UserRepository>();
 
         }

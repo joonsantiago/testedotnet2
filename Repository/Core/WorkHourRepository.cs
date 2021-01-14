@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Repositorys.Core
 {
-    public class WorkHourRepository : IBaseRepository<WorkHour>
+    public class WorkHourRepository 
     {
 
         private readonly DatabaseContext databaseContext;

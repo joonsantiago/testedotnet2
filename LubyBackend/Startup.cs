@@ -61,6 +61,7 @@ namespace LubyBackend
             //Injeção de dependência no ASP.NET
             services.AddScoped<DatabaseContext, DatabaseContext>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IProjectRepository, ProjectsRepository>();
 
         }
 

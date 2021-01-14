@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Repositorys.Core
 {
-    public class ProjectsRepository: IBaseRepository<Project>
+    public class ProjectsRepository: IProjectRepository
     {
 
         private readonly DatabaseContext databaseContext;
@@ -19,10 +19,6 @@ namespace Repositorys.Core
             this.databaseContext = databaseContext;
         }
 
-        /// <summary>
-        /// Save or Update data User
-        /// </summary>
-        /// <param name="item">Object User for saver or update</param>
         public void Save(Project item)
         {
             using (var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
@@ -40,35 +36,21 @@ namespace Repositorys.Core
             }
         }
 
-        /// <summary>
-        /// List all Projects
-        /// </summary>
-        /// <returns></returns>
         public List<Project> GetList()
         {
-            using (databaseContext)
-            {
-                return databaseContext.Project.ToList();
-            }
+            return databaseContext.Project.ToList();
         }
 
-        /// <summary>
-        /// Find Project by Id
-        /// </summary>
-        /// <param name="id">Value of Id for search</param>
-        /// <returns></returns>
+        public List<Project> GetList(int skip, int size)
+        {
+            return databaseContext.Project.Skip(skip).Take(size).ToList();
+        }
+
         public Project GetById(int id)
         {
-            using (databaseContext)
-            {
-                return databaseContext.Project.Where(x => x.Id == id).FirstOrDefault();
-            }
+            return databaseContext.Project.Where(x => x.Id == id).FirstOrDefault();
         }
 
-        /// <summary>
-        /// Delete Project
-        /// </summary>
-        /// <param name="item">Object Project for delete</param>
         public void Delete(Project item)
         {
             if (item.Id > 0)
@@ -80,6 +62,11 @@ namespace Repositorys.Core
                     transaction.Commit();
                 }
             }
+        }
+
+        public int Count()
+        {
+            return databaseContext.Project.Count();
         }
     }
 }

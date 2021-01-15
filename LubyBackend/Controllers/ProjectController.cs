@@ -27,8 +27,7 @@ namespace LubyBackend.Controllers
         public ProjectController(IUserRepository userRepository, IConfiguration configuration,
                                 IProjectRepository projectRepository) : base(configuration)
         {
-            this.userRepository = userRepository;       
-            //this.userLoged = this.userRepository.GetUser(email);
+            this.userRepository = userRepository;
 
             this.projectRepository = projectRepository;
             this.configuration = configuration;

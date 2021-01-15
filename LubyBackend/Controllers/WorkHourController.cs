@@ -12,6 +12,7 @@ using LubyBackend.Utils;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Models.Constantes;
 
 namespace LubyBackend.Controllers
 {
@@ -28,7 +29,6 @@ namespace LubyBackend.Controllers
                                 IWorkHourRepository workHourRepository) : base(configuration)
         {
             this.userRepository = userRepository;
-            //this.userLoged = this.userRepository.GetUser(email);
 
             this.workHourRepository = workHourRepository;
             this.configuration = configuration;
@@ -36,9 +36,17 @@ namespace LubyBackend.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        [Authorize]
+        [Authorize(Roles = "1,2")]
         public async Task<ActionResult<dynamic>> GetById(int id)
         {
+            int userId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value);
+            int roleId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value);
+
+            if(roleId == (int)EnumRole.Administrator)
+            {
+                userId = 0;
+            }
+
             if (id <= 0)
             {
                 return BadRequest(new { success = false, data = new { }, messages = "Send Id workHour it's required" });
@@ -46,7 +54,7 @@ namespace LubyBackend.Controllers
 
             try
             {
-                WorkHour data_workHour = workHourRepository.GetById(id);
+                WorkHour data_workHour = workHourRepository.GetById(id, userId);
                 if (data_workHour == null)
                 {
                     return Ok(new { success = false, data = new { }, messages = "No having workHour with the Id" });
@@ -61,18 +69,22 @@ namespace LubyBackend.Controllers
 
         [HttpGet]
         [Route("")]
-        [Authorize]
+        [Authorize(Roles = "1,2")]
         public async Task<ActionResult<dynamic>> GetAll([FromQuery(Name = "page")] int page = 0, [FromQuery(Name = "size")] int sizePage = 15)
         {
             int skip = page * sizePage;
+            int userId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value);
+            int roleId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value);
 
-            string id = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value;
-
+            if (roleId == (int)EnumRole.Administrator)
+            {
+                userId = 0;
+            }
 
             try
             {
-                int total = workHourRepository.Count();
-                List<WorkHour> list = workHourRepository.GetList(skip, sizePage);
+                int total = workHourRepository.Count(userId);
+                List<WorkHour> list = workHourRepository.GetList(skip, sizePage, userId);
 
                 Pagination<WorkHour> dataPagination = new Pagination<WorkHour>
                 {
@@ -92,10 +104,9 @@ namespace LubyBackend.Controllers
 
         [HttpPost]
         [Route("")]
-        [Authorize]
+        [Authorize(Roles = "1,2")]
         public async Task<ActionResult<dynamic>> SaveWorkHour([FromBody] WorkHour workHour)
         {
-
             List<string> validations_erro = new List<string>();
             if (workHour.CreatedAt == null)
             {
@@ -130,7 +141,7 @@ namespace LubyBackend.Controllers
 
         [HttpPatch]
         [Route("")]
-        [Authorize]
+        [Authorize(Roles = "1,2")]
         public async Task<ActionResult<dynamic>> UpdateWorkHour([FromBody] WorkHour workHour)
         {
             List<string> validations_erro = new List<string>();
@@ -173,9 +184,17 @@ namespace LubyBackend.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        [Authorize]
+        [Authorize(Roles = "1,2")]
         public async Task<ActionResult<dynamic>> DeleteWorkHour(int id)
         {
+            int userId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value);
+            int roleId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value);
+
+            if (roleId == (int)EnumRole.Administrator)
+            {
+                userId = 0;
+            }
+
             if (id <= 0)
             {
                 return BadRequest(new { success = false, data = new { }, messages = "Send Id workHour" });
@@ -183,7 +202,7 @@ namespace LubyBackend.Controllers
 
             try
             {
-                WorkHour data_workHour = workHourRepository.GetById(id);
+                WorkHour data_workHour = workHourRepository.GetById(id, userId);
                 if (data_workHour == null)
                 {
                     return Ok(new { success = false, data = new { }, messages = "No having workHour with the Id" });

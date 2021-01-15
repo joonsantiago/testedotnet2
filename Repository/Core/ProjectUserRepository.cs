@@ -43,7 +43,7 @@ namespace Repositorys.Core
 
         public List<ProjectUser> GetList(int skip, int size)
         {
-            return databaseContext.ProjectUser.Skip(skip).Take(size).ToList();
+            return databaseContext.ProjectUser.OrderByDescending(x => x.Id).Skip(skip).Take(size).ToList();
         }
 
         public ProjectUser GetById(int id)

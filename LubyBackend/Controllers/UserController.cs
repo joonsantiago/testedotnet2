@@ -138,10 +138,16 @@ namespace LubyBackend.Controllers
                     validations_erro.Add("CPF não é valido");
                 }
 
-                var older_user = userRepository.GetUser(user.CPF);
-                if(older_user != null)
+                var older_user_cpf = userRepository.GetUser(user.CPF);
+                if(older_user_cpf != null)
                 {
                     validations_erro.Add("Already exists user with this CPF");
+                }
+
+                var older_user_login = userRepository.GetUserLogin(user.Login);
+                if (older_user_login != null)
+                {
+                    validations_erro.Add("Already exists user with this Login");
                 }
             }
             catch (Exception ex1)
@@ -157,6 +163,9 @@ namespace LubyBackend.Controllers
 
             try
             {
+                user.Name = user.Name.ToUpper();
+                user.Login = user.Login.ToLower();
+                user.Email = user.Email.ToLower();
                 User data_user = userRepository.Save(user, updadtePassword);
                 return Ok(new { success = true, data = data_user, messages = "Item successfull created" });
             }
@@ -219,6 +228,18 @@ namespace LubyBackend.Controllers
                 {
                     validations_erro.Add("CPF não é valido");
                 }
+
+                var older_user_cpf = userRepository.GetUser(user.CPF);
+                if (older_user_cpf != null)
+                {
+                    validations_erro.Add("Already exists user with this CPF");
+                }
+
+                var older_user_login = userRepository.GetUserLogin(user.Login);
+                if (older_user_login != null)
+                {
+                    validations_erro.Add("Already exists user with this Login");
+                }
             }
             catch (Exception ex1)
             {
@@ -232,6 +253,9 @@ namespace LubyBackend.Controllers
 
             try
             {
+                user.Name = user.Name.ToUpper();
+                user.Login = user.Login.ToLower();
+                user.Email = user.Email.ToLower();
                 User data_user = userRepository.Save(user, updadtePassword);
                 return Ok(new { success = true, data = data_user, messages = "Item successfull updated" });
             }

@@ -1,4 +1,5 @@
 ﻿using LubyBackend.Services;
+using LubyBackend.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -15,12 +16,12 @@ namespace LubyBackend.Controllers
 {
     [ApiController]
     [Route("v1/auth")]
-    public class AuthController : Controller
+    public class AuthController : BaseController
     {
         public IConfiguration Configuration;
         private readonly IUserRepository userRepository;
 
-        public AuthController(IUserRepository userRepository, IConfiguration configuration)
+        public AuthController(IUserRepository userRepository, IConfiguration configuration) : base(configuration)
         {
             this.userRepository = userRepository;
             this.Configuration = configuration;
@@ -33,28 +34,41 @@ namespace LubyBackend.Controllers
         {
 
             string header_encrypted = Request.Headers["encrypted"];
-            bool encripted = !string.IsNullOrEmpty(header_encrypted) ? bool.Parse(header_encrypted) : false;
+            ////bool encripted = !string.IsNullOrEmpty(header_encrypted) ? bool.Parse(header_encrypted) : false;
 
-            string hash = model.Password;
+            //string hash = model.Password;
 
-            if (!encripted)
+            //if (!encripted)
+            //{
+            //    int workfactor = Int32.Parse(Configuration["bcrypt:workfactor"]);
+            //    hash = BCryptService.GenerateBCryptHash(hash, workfactor);
+            //}
+
+            try
             {
-                int workfactor = Int32.Parse(Configuration["bcrypt:workfactor"]);
-                hash = BCryptService.GenerateBCryptHash(hash, workfactor);
+
+                var user = userRepository.GetUserLogin(model.Login.ToLower());
+
+                if (user == null)
+                    return NotFound(new { message = "User not found with this login" });
+
+                var isEqualPass = BCryptService.PasswordCompare(model.Password, user.Password);
+
+                if (!isEqualPass)
+                    return NotFound(new { message = "Password incorrect" });
+
+                var token = TokenService.GenerateToken(user);
+                user.Password = "";
+                return new
+                {
+                    user = user,
+                    token = token
+                };
             }
-
-            var user = userRepository.GetUser(model.Login.ToLower(), hash);
-
-            if (user == null)
-                return NotFound(new { message = "Usuário ou senha inválidos" });
-
-            var token = TokenService.GenerateToken(user);
-            user.Password = "";
-            return new
+            catch (Exception ex)
             {
-                user = user,
-                token = token
-            };
+                return CatchError(ex, "Authentication user");
+            }
         }
 
     }

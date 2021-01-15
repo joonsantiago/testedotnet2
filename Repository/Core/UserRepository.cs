@@ -54,7 +54,7 @@ namespace Repositorys.Core
         {
             var query = from u in databaseContext.User
                         select new UserDto(u.Id, u.CPF, u.Name, u.Email, u.Login, u.Role); ;
-            return query.Skip(skip).Take(size).ToList();
+            return query.OrderByDescending(x => x.Id).Skip(skip).Take(size).ToList();
         }
 
         public UserDto GetById(int id)
@@ -102,6 +102,15 @@ namespace Repositorys.Core
             var query = from u in databaseContext.User
                         where u.Id == id
                         select u;
+            return query.FirstOrDefault();
+        }
+
+        public User GetUserLogin(string login)
+        {
+            var query = from u in databaseContext.User
+                        where u.Login == login
+                        select u;
+
             return query.FirstOrDefault();
         }
     }

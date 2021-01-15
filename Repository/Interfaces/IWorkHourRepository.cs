@@ -11,7 +11,7 @@ namespace Repositorys.Interfaces
         /// <summary>
         /// Save or Update data WorkHour
         /// </summary>
-        /// <param name="user">Object WorkHour for saver or update</param>
+        /// <param name="item">Object WorkHour for saver or update</param>
         WorkHour Save(WorkHour item);
 
         /// <summary>
@@ -23,17 +23,20 @@ namespace Repositorys.Interfaces
         /// <summary>
         /// List all WorkHours with pagination
         /// </summary>
-        /// <param name="skip"></param>
-        /// <param name="size"></param>
+        /// <param name="skip">Line for search start</param>
+        /// <param name="size">Size list data</param>
+        /// <param name="userId">User if for seachr</param>
         /// <returns></returns>
-        List<WorkHour> GetList(int skip, int size);
+        List<WorkHour> GetList(int skip, int size, int userId = 0);
 
         /// <summary>
         /// Find WorkHour by Id
         /// </summary>
         /// <param name="id">Value of Id for search</param>
+        /// <param name="userId">User if for seachr</param>
+        /// <param name="userId">User if for seachr</param>
         /// <returns></returns>
-        WorkHour GetById(int id);
+        WorkHour GetById(int id, int userId = 0);
 
         /// <summary>
         /// Delete WorkHour
@@ -44,6 +47,7 @@ namespace Repositorys.Interfaces
         /// <summary>
         /// Count all WorkHour
         /// </summary>
-        int Count();
+        /// <param name="userId">User if for seachr</param>
+        int Count(int userId = 0);
     }
 }

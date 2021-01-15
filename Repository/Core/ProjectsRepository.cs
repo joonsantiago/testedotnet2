@@ -44,7 +44,7 @@ namespace Repositorys.Core
 
         public List<Project> GetList(int skip, int size)
         {
-            return databaseContext.Project.Skip(skip).Take(size).ToList();
+            return databaseContext.Project.OrderByDescending(x => x.Id).Skip(skip).Take(size).ToList();
         }
 
         public Project GetById(int id)

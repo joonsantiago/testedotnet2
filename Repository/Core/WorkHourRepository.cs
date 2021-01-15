@@ -43,14 +43,22 @@ namespace Repositorys.Core
             return databaseContext.WorkHour.ToList();
         }
 
-        public List<WorkHour> GetList(int skip, int size)
+        public List<WorkHour> GetList(int skip, int size, int userId = 0)
         {
-            return databaseContext.WorkHour.Skip(skip).Take(size).ToList();
+            var entity = databaseContext.WorkHour
+                .OrderByDescending(x => x.Id)
+                .Skip(skip).Take(size);
+
+            entity = userId > 0 ? entity.Where(x => x.UserId == userId) : entity;
+            return entity.ToList();
         }
 
-        public WorkHour GetById(int id)
+        public WorkHour GetById(int id, int userId = 0)
         {
-            return databaseContext.WorkHour.Where(x => x.Id == id).FirstOrDefault();
+            var entity = databaseContext.WorkHour.Where(x => x.Id == id);
+
+            entity = userId > 0 ? entity.Where(x => x.UserId == userId) : entity;
+            return entity.FirstOrDefault();
         }
 
         public void Delete(WorkHour item)
@@ -66,9 +74,16 @@ namespace Repositorys.Core
             }
         }
 
-        public int Count()
+        public int Count(int userId = 0)
         {
-            return databaseContext.WorkHour.Count();
+            if(userId > 0)
+            {
+                return databaseContext.WorkHour.Where(x => x.UserId == userId).Count();
+            }
+            else
+            {
+                return databaseContext.WorkHour.Count();
+            }
         }
     }
 }

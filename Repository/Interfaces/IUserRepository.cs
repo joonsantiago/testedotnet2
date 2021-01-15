@@ -63,6 +63,13 @@ namespace Repositorys.Interfaces
         UserDto GetUser(string cpf);
 
         /// <summary>
+        /// Find user with email
+        /// </summary>
+        /// <param name="login">Login of User</param>
+        /// <returns></returns>
+        User GetUserLogin(string login);
+
+        /// <summary>
         /// Return one object user with Id
         /// </summary>
         /// <param name="id">Id of User</param>

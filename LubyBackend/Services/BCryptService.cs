@@ -20,5 +20,11 @@ namespace LubyBackend.Services
             }
             return value;
         }
+        public static bool PasswordCompare(string password, string bcrypthash)
+        {
+            bool sucess = false;
+            sucess = BCrypt.Net.BCrypt.Verify(password, bcrypthash);
+            return sucess;
+        }
     }
 }

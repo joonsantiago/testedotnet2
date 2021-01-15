@@ -13,6 +13,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Models.Constantes;
+using LubyBackend.Services;
 
 namespace LubyBackend.Controllers
 {
@@ -23,15 +24,16 @@ namespace LubyBackend.Controllers
         IWorkHourRepository workHourRepository;
         IUserRepository userRepository;
         IConfiguration configuration;
-
+        INotificationRepository notificationRepository;
 
         public WorkHourController(IUserRepository userRepository, IConfiguration configuration,
-                                IWorkHourRepository workHourRepository) : base(configuration)
+                                IWorkHourRepository workHourRepository, INotificationRepository notificationRepository) : base(configuration)
         {
             this.userRepository = userRepository;
+            this.configuration = configuration;
 
             this.workHourRepository = workHourRepository;
-            this.configuration = configuration;
+            this.notificationRepository = notificationRepository;
         }
 
         [HttpGet]
@@ -108,6 +110,13 @@ namespace LubyBackend.Controllers
         public async Task<ActionResult<dynamic>> SaveWorkHour([FromBody] WorkHour workHour)
         {
             List<string> validations_erro = new List<string>();
+            WorkHour data_workHour = new WorkHour();
+
+            Notification notification = new Notification
+            {
+                Status = (int)EnumNotificationStatus.Sucesso
+            };
+
             if (workHour.CreatedAt == null)
             {
                 validations_erro.Add("WorkHour created date is required");
@@ -130,12 +139,41 @@ namespace LubyBackend.Controllers
 
             try
             {
-                WorkHour data_workHour = workHourRepository.Save(workHour);
+                data_workHour = workHourRepository.Save(workHour);
+                notification.WorkHourId = data_workHour.Id;
+                notification = notificationRepository.Save(notification);
                 return Ok(new { success = true, data = data_workHour, messages = "Item successfull created" });
             }
             catch (Exception ex)
             {
+                notification.Status = (int)EnumNotificationStatus.ErroAplicacao;
+                notification = notificationRepository.Save(notification);
                 return CatchError(ex, "Save new workHour");
+            }
+            finally
+            {
+                try
+                {
+
+                    if(data_workHour.Id > 0)
+                    {
+                        var urlSendNotification = configuration["external_links:send_notification"];
+                        var responseSendNotification = HttpService.Get(urlSendNotification + "/" + data_workHour.Id.ToString());
+
+                        if(responseSendNotification.httpStatusCode != 200 || responseSendNotification.message != "Enviado")
+                        {
+                            notification.Status = (int)EnumNotificationStatus.ServidorIndisponivel;
+                            notification = notificationRepository.Save(notification);
+                        }
+                    }
+                }
+                catch (Exception ex1)
+                {
+
+                    notification.Status = (int)EnumNotificationStatus.ServidorIndisponivel;
+                    notification = notificationRepository.Save(notification);
+                    CatchError(ex1, "Send notification Work Hour");
+                }
             }
         }
 

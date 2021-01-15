@@ -17,5 +17,6 @@ namespace Repositorys.Context
         public DbSet<Project> Project { get; set; }
         public DbSet<WorkHour> WorkHour { get; set; }
         public DbSet<ProjectUser> ProjectUser { get; set; }
+        public DbSet<Notification> Notification { get; set; }
     }
 }

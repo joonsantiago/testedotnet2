@@ -64,6 +64,7 @@ namespace LubyBackend
             services.AddTransient<IProjectRepository, ProjectsRepository>();
             services.AddTransient<IProjectUserRepository, ProjectUserRepository>();
             services.AddTransient<IWorkHourRepository, WorkHourRepository>();
+            services.AddTransient<INotificationRepository, NotificationRepository>();
 
         }
 

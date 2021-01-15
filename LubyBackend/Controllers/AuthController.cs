@@ -3,7 +3,7 @@ using LubyBackend.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Models.Core;
+using Models.Dto;
 //using Repositorys.Context;
 //using Repositorys.Core;
 using Repositorys.Interfaces;
@@ -28,10 +28,15 @@ namespace LubyBackend.Controllers
             this.configuration = configuration;
         }
 
+        /// <summary>
+        /// Method for authenticate users
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] AuthDto model)
         {
 
             try

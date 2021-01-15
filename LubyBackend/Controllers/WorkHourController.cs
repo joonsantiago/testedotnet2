@@ -25,15 +25,19 @@ namespace LubyBackend.Controllers
         IUserRepository userRepository;
         IConfiguration configuration;
         INotificationRepository notificationRepository;
+        IProjectUserRepository projectUserRepository;
 
         public WorkHourController(IUserRepository userRepository, IConfiguration configuration,
-                                IWorkHourRepository workHourRepository, INotificationRepository notificationRepository) : base(configuration)
+                                IWorkHourRepository workHourRepository, INotificationRepository notificationRepository,
+                                IProjectUserRepository projectUserRepository) 
+            : base(configuration)
         {
             this.userRepository = userRepository;
             this.configuration = configuration;
 
             this.workHourRepository = workHourRepository;
             this.notificationRepository = notificationRepository;
+            this.projectUserRepository = projectUserRepository;
         }
 
         [HttpGet]
@@ -132,6 +136,19 @@ namespace LubyBackend.Controllers
                 validations_erro.Add("WorkHour user id is required");
             }
 
+            int userId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value);
+            int roleId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value);
+
+            if (roleId != (int)EnumRole.Administrator)
+            {
+                var projectUser = projectUserRepository.ListByUser(userId, workHour.ProjectId);
+
+                if(projectUser == null)
+                {
+                    validations_erro.Add("User don't has vinculate to project");
+                }
+            }
+
             if (validations_erro.Count() > 0)
             {
                 return BadRequest(new { success = false, data = new { }, messages = validations_erro });
@@ -139,6 +156,13 @@ namespace LubyBackend.Controllers
 
             try
             {
+                if(workHour.FinishedAt != null)
+                {
+                    var d1 = DateTime.Parse(workHour.CreatedAt.ToString());
+                    var d2 = DateTime.Parse(workHour.FinishedAt.ToString());
+                    workHour.TotalTime = (d2 - d1).Hours;
+                }
+
                 data_workHour = workHourRepository.Save(workHour);
                 notification.WorkHourId = data_workHour.Id;
                 notification = notificationRepository.Save(notification);
@@ -203,6 +227,19 @@ namespace LubyBackend.Controllers
                 validations_erro.Add("WorkHour user id is required");
             }
 
+            int userId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value);
+            int roleId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value);
+
+            if (roleId != (int)EnumRole.Administrator)
+            {
+                var projectUser = projectUserRepository.ListByUser(userId, workHour.ProjectId);
+
+                if (projectUser == null)
+                {
+                    validations_erro.Add("User don't has vinculate to project");
+                }
+            }
+
             if (validations_erro.Count() > 0)
             {
                 return BadRequest(new { success = false, data = new { }, messages = validations_erro });
@@ -210,6 +247,13 @@ namespace LubyBackend.Controllers
 
             try
             {
+                if (workHour.FinishedAt != null)
+                {
+                    var d1 = DateTime.Parse(workHour.CreatedAt.ToString());
+                    var d2 = DateTime.Parse(workHour.FinishedAt.ToString());
+                    workHour.TotalTime = (d2 - d1).Hours;
+                }
+
                 WorkHour data_workHour = workHourRepository.Save(workHour);
                 return Ok(new { success = true, data = data_workHour, messages = "Item successfull updated" });
             }
@@ -252,6 +296,15 @@ namespace LubyBackend.Controllers
             {
                 return CatchError(ex, string.Format("Delete workHour id ({0})", id));
             }
+        }
+
+        [HttpGet]
+        [Route("dev-top5-week")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> DevTop5Week()
+        {
+            var data = workHourRepository.DevTop5Week();
+            return Ok(new { success = true, data = data, messages = "Item successfull calculate" });
         }
 
     }

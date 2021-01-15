@@ -10,6 +10,7 @@ namespace Models.Core
         public int ProjectId { get; set; }
         public int UserId { get; set; }
 
+        public decimal? TotalTime { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? FinishedAt { get; set; }
     }

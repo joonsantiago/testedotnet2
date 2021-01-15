@@ -49,5 +49,11 @@ namespace Repositorys.Interfaces
         /// </summary>
         /// <param name="userId">User if for seachr</param>
         int Count(int userId = 0);
+
+        /// <summary>
+        /// Return top 5 developers with has many hour work
+        /// </summary>
+        /// <returns></returns>
+        List<DevTop5WeekDto> DevTop5Week();
     }
 }

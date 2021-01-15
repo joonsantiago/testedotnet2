@@ -12,6 +12,7 @@ using LubyBackend.Utils;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Models.Constantes;
 
 namespace LubyBackend.Controllers
 {
@@ -106,6 +107,20 @@ namespace LubyBackend.Controllers
             {
                 validations_erro.Add("ProjectUser user id is required");
             }
+
+            int userId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value);
+            int roleId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value);
+
+            if (roleId != (int)EnumRole.Administrator)
+            {
+                var projectUserOlder = projectUserRepository.ListByUser(projectUser.UserId, projectUser.ProjectId);
+
+                if (projectUserOlder != null)
+                {
+                    validations_erro.Add("User has vinculation to project");
+                }
+            }
+
 
             if (validations_erro.Count() > 0)
             {

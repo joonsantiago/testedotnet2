@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile></DocumentationFile>
+    <DocumentationFile>bin\Debug\appnetcore3.0\LubyBackend.xml</DocumentationFile>
+    <OutputPath>bin\Debug\appnetcore3.0\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

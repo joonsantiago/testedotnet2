@@ -68,5 +68,17 @@ namespace Repositorys.Core
         {
             return databaseContext.ProjectUser.Count();
         }
+
+        public List<ProjectUser> ListByUser(int userId, int projectId = 0)
+        {
+            var entity = databaseContext.ProjectUser.Where(x => x.UserId == userId);
+
+            if(projectId > 0)
+            {
+                entity = entity.Where(x => x.ProjectId == projectId);
+            }
+
+            return entity.ToList();
+        }
     }
 }

@@ -4,17 +4,12 @@
         <name>LubyBackend</name>
     </assembly>
     <members>
-        <member name="T:LubyBackend.Controllers.AuthController">
+        <member name="M:LubyBackend.Controllers.AuthController.Authenticate(Models.Dto.AuthDto)">
             <summary>
-            Auth Controller, responsible for login, logout
-            </summary>
-        </member>
-        <member name="M:LubyBackend.Controllers.AuthController.Authenticate(Models.Core.User)">
-            <summary>
-            Method to authenticated user
+            Method for authenticate users
             </summary>
             <param name="model"></param>
-            <returns>token for api any and information about user</returns>
+            <returns></returns>
         </member>
     </members>
 </doc>

@@ -69,9 +69,9 @@ namespace LubyBackend
 
 
             // configuration Swagger
-            services.AddSwaggerGen(options => {
+            services.AddSwaggerGen(c => {
 
-                options.SwaggerDoc("v1",
+                c.SwaggerDoc("v1",
                     new OpenApiInfo
                     {
                         Title = "Luby ASPNET.CORE",
@@ -83,15 +83,28 @@ namespace LubyBackend
                             Url = new Uri("https://github.com/joonsantiago")
                         }
                     });
-
-                options.AddSecurityDefinition("bearer",
-                    new OpenApiSecurityScheme
+                // add JWT Authentication
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Name = "JWT Authentication",
+                    Description = "Enter JWT Bearer token **_only_**",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer", // must be lower case
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
                     {
-                        In = ParameterLocation.Header,
-                        Description = "Authentication based in JWT token",
-                        Name = "Authorization",
-                        Type = SecuritySchemeType.ApiKey
-                    });
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+
+                c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {securityScheme, new string[] { }}
+                });
+
             });
         }
 

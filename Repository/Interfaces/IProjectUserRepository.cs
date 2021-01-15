@@ -46,5 +46,12 @@ namespace Repositorys.Interfaces
         /// Count all ProjectUser
         /// </summary>
         int Count();
+
+        /// <summary>
+        /// List all ProjectUsers for one user
+        /// </summary>
+        /// <param name="userId">Get projects user</param>
+        /// <returns></returns>
+        List<ProjectUser> ListByUser(int userId, int projectId = 0);
     }
 }

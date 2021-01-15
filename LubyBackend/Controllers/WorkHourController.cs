@@ -160,7 +160,10 @@ namespace LubyBackend.Controllers
                 {
                     var d1 = DateTime.Parse(workHour.CreatedAt.ToString());
                     var d2 = DateTime.Parse(workHour.FinishedAt.ToString());
-                    workHour.TotalTime = (d2 - d1).Hours;
+                    var totalMinutes = float.Parse((d2 - d1).Minutes.ToString());
+                    var totalHours = float.Parse(((d2 - d1).Hours * 60).ToString());
+                    decimal totalTime = Decimal.Parse(((totalHours + totalMinutes)/ 60).ToString());
+                    workHour.TotalTime = totalTime;
                 }
 
                 data_workHour = workHourRepository.Save(workHour);
@@ -251,7 +254,10 @@ namespace LubyBackend.Controllers
                 {
                     var d1 = DateTime.Parse(workHour.CreatedAt.ToString());
                     var d2 = DateTime.Parse(workHour.FinishedAt.ToString());
-                    workHour.TotalTime = (d2 - d1).Hours;
+                    var totalMinutes = float.Parse((d2 - d1).Minutes.ToString());
+                    var totalHours = float.Parse(((d2 - d1).Hours * 60).ToString());
+                    decimal totalTime = Decimal.Parse(((totalHours + totalMinutes) / 60).ToString());
+                    workHour.TotalTime = totalTime;
                 }
 
                 WorkHour data_workHour = workHourRepository.Save(workHour);

@@ -92,23 +92,26 @@ namespace Repositorys.Core
             List<DevTop5WeekDto> dataReturn = new List<DevTop5WeekDto>();
 
             var dateWeek = DateTime.Now.AddDays(-7);
-            var listWorks = (from wh in databaseContext.WorkHour
-                            where wh.FinishedAt != null && wh.CreatedAt >= dateWeek && wh.FinishedAt <= DateTime.Now
-                            group wh by wh.UserId into usersGroup
-                            select usersGroup).Take(5).ToList();
+            var listWorks = databaseContext.WorkHour.Where(wh => wh.FinishedAt != null && wh.CreatedAt >= dateWeek && wh.FinishedAt <= DateTime.Now).ToList();
 
-            foreach (var lh in listWorks)
+            foreach (var lw in listWorks)
             {
-                WorkHour u = new WorkHour
+                var lwUser = userList.Where(x => x.UserId == lw.UserId).FirstOrDefault();
+                if(lwUser == null)
                 {
-                    UserId = lh.Key,
-                    TotalTime = 0
-                };
-                foreach (var hour in lh)
-                {
-                    u.TotalTime += hour.TotalTime;
+                    lwUser = new WorkHour
+                    {
+                        UserId = lw.UserId,
+                        TotalTime = 0
+                    };
+
+                    lwUser.TotalTime += lw.TotalTime;
+                    userList.Add(lwUser);
                 }
-                userList.Add(u);
+                else
+                {
+                    lwUser.TotalTime += lw.TotalTime;
+                }
             }
 
             userList = userList.OrderByDescending(x => x.TotalTime).Take(5).ToList();

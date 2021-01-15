@@ -13,7 +13,7 @@ namespace Repositorys.Interfaces
         /// Save or Update data Project
         /// </summary>
         /// <param name="user">Object Project for saver or update</param>
-        void Save(Project item);
+        Project Save(Project item);
 
         /// <summary>
         /// List all Projects

@@ -19,7 +19,7 @@ namespace Repositorys.Core
             this.databaseContext = databaseContext;
         }
 
-        public void Save(Project item)
+        public Project Save(Project item)
         {
             using (var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
@@ -34,6 +34,7 @@ namespace Repositorys.Core
                 databaseContext.SaveChanges();
                 transaction.Commit();
             }
+            return item;
         }
 
         public List<Project> GetList()

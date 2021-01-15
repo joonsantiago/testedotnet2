@@ -20,7 +20,7 @@ namespace Repositorys.Interfaces
         /// Save or Update data User
         /// </summary>
         /// <param name="user">Object User for saver or update</param>
-        void Save(User item);
+        User Save(User item);
 
         /// <summary>
         /// List all Users
@@ -60,5 +60,12 @@ namespace Repositorys.Interfaces
         /// <param name="email">E-mail of User</param>
         /// <returns></returns>
         UserDto GetUser(string email);
+
+        /// <summary>
+        /// Return one object user with Id
+        /// </summary>
+        /// <param name="id">Id of User</param>
+        /// <returns></returns>
+        User GetUser(int id);
     }
 }

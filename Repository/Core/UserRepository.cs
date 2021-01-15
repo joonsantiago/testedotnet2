@@ -19,7 +19,7 @@ namespace Repositorys.Core
             this.databaseContext = databaseContext;
         }
 
-        public void Save(User user)
+        public User Save(User user)
         {
             using (var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
@@ -33,34 +33,22 @@ namespace Repositorys.Core
                 }
                 databaseContext.SaveChanges();
                 transaction.Commit();
+
+                return user;
             }
         }
 
         public List<UserDto> GetList()
         {
             var query = from u in databaseContext.User
-                        select new UserDto
-                        {
-                            Id = u.Id,
-                            Login = u.Login,
-                            Email = u.Email,
-                            Name = u.Name,
-                            Role = u.Role
-                        };
+                        select new UserDto(u.Id, u.CPF, u.Name, u.Email, u.Login, u.Role);
             return query.ToList();
         }
 
         public List<UserDto> GetList(int skip, int size)
         {
             var query = from u in databaseContext.User
-                        select new UserDto
-                        {
-                            Id = u.Id,
-                            Login = u.Login,
-                            Email = u.Email,
-                            Name = u.Name,
-                            Role = u.Role
-                        };
+                        select new UserDto(u.Id, u.CPF, u.Name, u.Email, u.Login, u.Role); ;
             return query.Skip(skip).Take(size).ToList();
         }
 
@@ -68,14 +56,7 @@ namespace Repositorys.Core
         {
             var query = from u in databaseContext.User
                         where u.Id == id
-                        select new UserDto
-                        {
-                            Id = u.Id,
-                            Login = u.Login,
-                            Email = u.Email,
-                            Name = u.Name,
-                            Role = u.Role
-                        };
+                        select new UserDto(u.Id, u.CPF, u.Name, u.Email, u.Login, u.Role);
             return query.FirstOrDefault();
         }
 
@@ -106,15 +87,16 @@ namespace Repositorys.Core
         {
             var query = from u in databaseContext.User
                         where u.Email == email
-                        select new UserDto
-                        {
-                            Id = u.Id,
-                            Login = u.Login,
-                            Email = u.Email,
-                            Name = u.Name,
-                            Role = u.Role
-                        };
+                        select new UserDto(u.Id, u.CPF, u.Name, u.Email, u.Login, u.Role);
 
+            return query.FirstOrDefault();
+        }
+
+        public User GetUser(int id)
+        {
+            var query = from u in databaseContext.User
+                        where u.Id == id
+                        select u;
             return query.FirstOrDefault();
         }
     }

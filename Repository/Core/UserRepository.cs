@@ -19,7 +19,7 @@ namespace Repositorys.Core
             this.databaseContext = databaseContext;
         }
 
-        public User Save(User user)
+        public User Save(User user, bool uptadePassword = false)
         {
             using (var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
@@ -30,6 +30,11 @@ namespace Repositorys.Core
                 else
                 {
                     databaseContext.Entry(user).State = EntityState.Modified;
+                    if(!uptadePassword)
+                    {
+                        databaseContext.Entry(user).Property(x => x.Password).IsModified = false;
+                        databaseContext.Entry(user).Property(x => x.Login).IsModified = false;
+                    }
                 }
                 databaseContext.SaveChanges();
                 transaction.Commit();
@@ -83,10 +88,10 @@ namespace Repositorys.Core
             return databaseContext.User.Count();
 
         }
-        public UserDto GetUser(string email)
+        public UserDto GetUser(string cpf)
         {
             var query = from u in databaseContext.User
-                        where u.Email == email
+                        where u.CPF == cpf
                         select new UserDto(u.Id, u.CPF, u.Name, u.Email, u.Login, u.Role);
 
             return query.FirstOrDefault();

@@ -20,7 +20,8 @@ namespace Repositorys.Interfaces
         /// Save or Update data User
         /// </summary>
         /// <param name="user">Object User for saver or update</param>
-        User Save(User item);
+        /// <param name="uptadePassword">Option for update password</param>
+        User Save(User item, bool uptadePassword = false);
 
         /// <summary>
         /// List all Users
@@ -57,9 +58,9 @@ namespace Repositorys.Interfaces
         /// <summary>
         /// Find user with email
         /// </summary>
-        /// <param name="email">E-mail of User</param>
+        /// <param name="cpf">CPF of User</param>
         /// <returns></returns>
-        UserDto GetUser(string email);
+        UserDto GetUser(string cpf);
 
         /// <summary>
         /// Return one object user with Id

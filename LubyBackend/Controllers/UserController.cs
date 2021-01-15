@@ -22,10 +22,17 @@ namespace LubyBackend.Controllers
     {
         IUserRepository userRepository;
         IConfiguration configuration;
+
+        int workfactor;
+        string urlValidateCPF;
         public UserController(IUserRepository userRepository, IConfiguration configuration) : base(configuration)
         {
             this.userRepository = userRepository;
             this.configuration = configuration;
+
+
+            this.workfactor = Int32.Parse(configuration["bcrypt:workfactor"]);
+            this.urlValidateCPF = configuration["external_links:validate_cpf"];
         }
 
         [HttpGet]
@@ -89,8 +96,7 @@ namespace LubyBackend.Controllers
         public async Task<ActionResult<dynamic>> SaveUser([FromBody] User user)
         {
             List<string> validations_erro = new List<string>();
-            int workfactor = Int32.Parse(configuration["bcrypt:workfactor"]);
-
+            bool updadtePassword = false;
             if (string.IsNullOrEmpty(user.Name))
             {
                 validations_erro.Add("User name is required");
@@ -119,8 +125,28 @@ namespace LubyBackend.Controllers
                 }
                 else
                 {
+                    updadtePassword = true;
                     user.Password = BCryptService.GenerateBCryptHash(user.Password, workfactor);
                 }
+            }
+
+            try
+            {
+                var responseCPFValid = HttpService.Get(urlValidateCPF + "/" + user.CPF);
+                if (responseCPFValid.httpStatusCode != 200 && responseCPFValid.message != "Autorizado")
+                {
+                    validations_erro.Add("CPF não é valido");
+                }
+
+                var older_user = userRepository.GetUser(user.CPF);
+                if(older_user != null)
+                {
+                    validations_erro.Add("Already exists user with this CPF");
+                }
+            }
+            catch (Exception ex1)
+            {
+                return CatchError(ex1, string.Format("Update user id({0}), validate CPF", user.Id));
             }
 
             if (validations_erro.Count() > 0)
@@ -131,7 +157,7 @@ namespace LubyBackend.Controllers
 
             try
             {
-                User data_user = userRepository.Save(user);
+                User data_user = userRepository.Save(user, updadtePassword);
                 return Ok(new { success = true, data = data_user, messages = "Item successfull created" });
             }
             catch (Exception ex)
@@ -146,7 +172,7 @@ namespace LubyBackend.Controllers
         public async Task<ActionResult<dynamic>> UpdateUser([FromBody] User user)
         {
             List<string> validations_erro = new List<string>();
-            int workfactor = Int32.Parse(configuration["bcrypt:workfactor"]);
+            bool updadtePassword = false;
 
             if (string.IsNullOrEmpty(user.Name))
             {
@@ -181,8 +207,22 @@ namespace LubyBackend.Controllers
                 }
                 else
                 {
+                    updadtePassword = true;
                     user.Password = BCryptService.GenerateBCryptHash(user.Password, workfactor);
                 }
+            }
+
+            try
+            {
+                var responseCPFValid = HttpService.Get(urlValidateCPF + "/" + user.CPF);
+                if(responseCPFValid.httpStatusCode != 200 || responseCPFValid.message != "Autorizado")
+                {
+                    validations_erro.Add("CPF não é valido");
+                }
+            }
+            catch (Exception ex1)
+            {
+                return CatchError(ex1, string.Format("Update user id({0}), validate CPF", user.Id));
             }
 
             if (validations_erro.Count() > 0)
@@ -192,12 +232,12 @@ namespace LubyBackend.Controllers
 
             try
             {
-                User data_user = userRepository.Save(user);
+                User data_user = userRepository.Save(user, updadtePassword);
                 return Ok(new { success = true, data = data_user, messages = "Item successfull updated" });
             }
-            catch (Exception ex)
+            catch (Exception ex2)
             {
-                return CatchError(ex, string.Format("Update user id({0})", user.Id));
+                return CatchError(ex2, string.Format("Update user id({0})", user.Id));
             }
 
         }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Repositorys.Interfaces;
-using Models;
+using Models.Core;
 using Microsoft.AspNetCore.Authorization;
 using Models.Dto;
 using LubyBackend.Utils;

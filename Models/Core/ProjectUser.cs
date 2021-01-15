@@ -4,10 +4,11 @@ using System.Text;
 
 namespace Models.Core
 {
-    public class Project
+    public class ProjectUser
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public int userId { get; set; }
+        public int projectId { get; set; }
+
     }
 }

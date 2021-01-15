@@ -62,6 +62,7 @@ namespace LubyBackend
             services.AddScoped<DatabaseContext, DatabaseContext>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IProjectRepository, ProjectsRepository>();
+            services.AddTransient<IProjectUserRepository, ProjectUserRepository>();
 
         }
 

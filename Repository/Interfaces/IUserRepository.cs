@@ -1,4 +1,4 @@
-﻿using Models;
+﻿using Models.Core;
 using Models.Dto;
 using System;
 using System.Collections.Generic;

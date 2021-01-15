@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Models;
+using Models.Core ;
 using Repositorys.Context;
 using Repositorys.Core;
 using Repositorys.Interfaces;

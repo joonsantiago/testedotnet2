@@ -6,44 +6,44 @@ using System.Text;
 
 namespace Repositorys.Interfaces
 {
-    public interface IProjectRepository
+    public interface IProjectUserRepository
     {
 
         /// <summary>
-        /// Save or Update data Project
+        /// Save or Update data ProjectUser
         /// </summary>
-        /// <param name="user">Object Project for saver or update</param>
-        Project Save(Project item);
+        /// <param name="user">Object ProjectUser for saver or update</param>
+        ProjectUser Save(ProjectUser item);
 
         /// <summary>
-        /// List all Projects
+        /// List all ProjectUsers
         /// </summary>
         /// <returns></returns>
-        List<Project> GetList();
+        List<ProjectUser> GetList();
 
         /// <summary>
-        /// List all Projects with pagination
+        /// List all ProjectUsers with pagination
         /// </summary>
         /// <param name="skip"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        List<Project> GetList(int skip, int size);
+        List<ProjectUser> GetList(int skip, int size);
 
         /// <summary>
-        /// Find Project by Id
+        /// Find ProjectUser by Id
         /// </summary>
         /// <param name="id">Value of Id for search</param>
         /// <returns></returns>
-        Project GetById(int id);
+        ProjectUser GetById(int id);
 
         /// <summary>
-        /// Delete Project
+        /// Delete ProjectUser
         /// </summary>
-        /// <param name="item">Object Project for delete</param>
-        void Delete(Project item);
+        /// <param name="item">Object ProjectUser for delete</param>
+        void Delete(ProjectUser item);
 
         /// <summary>
-        /// Count all Project
+        /// Count all ProjectUser
         /// </summary>
         int Count();
     }

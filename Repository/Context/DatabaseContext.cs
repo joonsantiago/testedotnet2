@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Models;
+using Models.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,5 +16,6 @@ namespace Repositorys.Context
         public DbSet<User> User { get; set; }
         public DbSet<Project> Project { get; set; }
         public DbSet<WorkHour> WorkHour { get; set; }
+        public DbSet<ProjectUser> ProjectUser { get; set; }
     }
 }

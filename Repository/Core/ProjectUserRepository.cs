@@ -10,22 +10,21 @@ using System.Linq;
 
 namespace Repositorys.Core
 {
-    public class ProjectsRepository: IProjectRepository
+    public class ProjectUserRepository : IProjectUserRepository
     {
-
         private readonly DatabaseContext databaseContext;
-        public ProjectsRepository(DatabaseContext databaseContext)
+        public ProjectUserRepository(DatabaseContext databaseContext)
         {
             this.databaseContext = databaseContext;
         }
 
-        public Project Save(Project item)
+        public ProjectUser Save(ProjectUser item)
         {
             using (var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 if (item.Id == 0)
                 {
-                    databaseContext.Project.Add(item);
+                    databaseContext.ProjectUser.Add(item);
                 }
                 else
                 {
@@ -37,22 +36,22 @@ namespace Repositorys.Core
             return item;
         }
 
-        public List<Project> GetList()
+        public List<ProjectUser> GetList()
         {
-            return databaseContext.Project.ToList();
+            return databaseContext.ProjectUser.ToList();
         }
 
-        public List<Project> GetList(int skip, int size)
+        public List<ProjectUser> GetList(int skip, int size)
         {
-            return databaseContext.Project.Skip(skip).Take(size).ToList();
+            return databaseContext.ProjectUser.Skip(skip).Take(size).ToList();
         }
 
-        public Project GetById(int id)
+        public ProjectUser GetById(int id)
         {
-            return databaseContext.Project.Where(x => x.Id == id).FirstOrDefault();
+            return databaseContext.ProjectUser.Where(x => x.Id == id).FirstOrDefault();
         }
 
-        public void Delete(Project item)
+        public void Delete(ProjectUser item)
         {
             if (item.Id > 0)
             {
@@ -67,7 +66,7 @@ namespace Repositorys.Core
 
         public int Count()
         {
-            return databaseContext.Project.Count();
+            return databaseContext.ProjectUser.Count();
         }
     }
 }

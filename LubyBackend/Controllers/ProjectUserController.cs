@@ -37,11 +37,12 @@ namespace LubyBackend.Controllers
 
         [HttpGet]
         [Route("{id}")]
+        [Authorize]
         public async Task<ActionResult<dynamic>> GetById(int id)
         {
             if (id <= 0)
             {
-                return BadRequest(new { success = false, data = new { }, messages = "Send Id projectUser" });
+                return BadRequest(new { success = false, data = new { }, messages = "Send Id projectUser it's required" });
             }
 
             try
@@ -98,16 +99,20 @@ namespace LubyBackend.Controllers
             
             List<string> validations_erro = new List<string>();
 
-            if (projectUser.projectId <= 0)
+            if (projectUser.ProjectId <= 0)
             {
                 validations_erro.Add("ProjectUser project id is required");
             }
 
-            if (projectUser.userId <= 0)
+            if (projectUser.UserId <= 0)
             {
                 validations_erro.Add("ProjectUser user id is required");
             }
 
+            if (validations_erro.Count() > 0)
+            {
+                return BadRequest(new { success = false, data = new { }, messages = validations_erro });
+            }
 
             try
             {
@@ -132,12 +137,12 @@ namespace LubyBackend.Controllers
                 validations_erro.Add("ProjectUser id is required");
             }
 
-            if (projectUser.projectId <= 0)
+            if (projectUser.ProjectId <= 0)
             {
                 validations_erro.Add("ProjectUser project id is required");
             }
 
-            if (projectUser.userId <= 0)
+            if (projectUser.UserId <= 0)
             {
                 validations_erro.Add("ProjectUser user id is required");
             }

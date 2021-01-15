@@ -36,11 +36,12 @@ namespace LubyBackend.Controllers
 
         [HttpGet]
         [Route("{id}")]
+        [Authorize]
         public async Task<ActionResult<dynamic>> GetById(int id)
         {
             if (id <= 0)
             {                
-                return BadRequest(new { success = false, data = new { }, messages ="Send Id project" });
+                return BadRequest(new { success = false, data = new { }, messages = "Send Id project it's required" });
             }
 
             try

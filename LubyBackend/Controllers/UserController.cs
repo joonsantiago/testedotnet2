@@ -41,7 +41,7 @@ namespace LubyBackend.Controllers
         {
             if (id <= 0)
             {
-                return BadRequest(new { success = false, data = new { }, messages = "Send Id user" });
+                return BadRequest(new { success = false, data = new { }, messages = "Send Id user it's required" });
             }
 
             try

@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Repositorys.Core
 {
-    public class WorkHourRepository 
+    public class WorkHourRepository : IWorkHourRepository
     {
 
         private readonly DatabaseContext databaseContext;
@@ -20,11 +20,7 @@ namespace Repositorys.Core
             this.databaseContext = databaseContext;
         }
 
-        /// <summary>
-        /// Save or Update data User
-        /// </summary>
-        /// <param name="item">Object User for saver or update</param>
-        public void Save(WorkHour item)
+        public WorkHour Save(WorkHour item)
         {
             using (var transaction = databaseContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
@@ -39,37 +35,24 @@ namespace Repositorys.Core
                 databaseContext.SaveChanges();
                 transaction.Commit();
             }
+            return item;
         }
 
-        /// <summary>
-        /// List all WorkHours
-        /// </summary>
-        /// <returns></returns>
         public List<WorkHour> GetList()
         {
-            using (databaseContext)
-            {
-                return databaseContext.WorkHour.ToList();
-            }
+            return databaseContext.WorkHour.ToList();
         }
 
-        /// <summary>
-        /// Find WorkHour by Id
-        /// </summary>
-        /// <param name="id">Value of Id for search</param>
-        /// <returns></returns>
+        public List<WorkHour> GetList(int skip, int size)
+        {
+            return databaseContext.WorkHour.Skip(skip).Take(size).ToList();
+        }
+
         public WorkHour GetById(int id)
         {
-            using (databaseContext)
-            {
-                return databaseContext.WorkHour.Where(x => x.Id == id).FirstOrDefault();
-            }
+            return databaseContext.WorkHour.Where(x => x.Id == id).FirstOrDefault();
         }
 
-        /// <summary>
-        /// Delete WorkHour
-        /// </summary>
-        /// <param name="item">Object WorkHour for delete</param>
         public void Delete(WorkHour item)
         {
             if (item.Id > 0)
@@ -81,6 +64,11 @@ namespace Repositorys.Core
                     transaction.Commit();
                 }
             }
+        }
+
+        public int Count()
+        {
+            return databaseContext.WorkHour.Count();
         }
     }
 }

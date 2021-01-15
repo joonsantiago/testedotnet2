@@ -17,6 +17,7 @@ namespace LubyBackend.Utils
             this.configuration = configuration;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public ObjectResult CatchError(Exception ex, string action_do)
         {
             var msg = "";

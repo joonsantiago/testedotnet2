@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Repositorys.Context;
 using Repositorys.Core;
 using Repositorys.Interfaces;
@@ -66,6 +67,32 @@ namespace LubyBackend
             services.AddTransient<IWorkHourRepository, WorkHourRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
 
+
+            // configuration Swagger
+            services.AddSwaggerGen(options => {
+
+                options.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "Luby ASPNET.CORE",
+                        Version = "v1",
+                        Description = "Teste de ASPNET.CORE API configurado com o swagger",
+                        Contact = new OpenApiContact
+                        {
+                            Name = "Jonatas Santiago",
+                            Url = new Uri("https://github.com/joonsantiago")
+                        }
+                    });
+
+                options.AddSecurityDefinition("bearer",
+                    new OpenApiSecurityScheme
+                    {
+                        In = ParameterLocation.Header,
+                        Description = "Authentication based in JWT token",
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.ApiKey
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,6 +119,13 @@ namespace LubyBackend
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+
+            // Ativando middlewares para uso do Swagger
+            app.UseSwagger();
+            app.UseSwaggerUI(options => {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Luby Teste ASPNET.CORE V1");
             });
         }
 

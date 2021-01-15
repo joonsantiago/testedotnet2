@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LubyBackend</name>
+    </assembly>
+    <members>
+        <member name="T:LubyBackend.Controllers.AuthController">
+            <summary>
+            Auth Controller, responsible for login, logout
+            </summary>
+        </member>
+        <member name="M:LubyBackend.Controllers.AuthController.Authenticate(Models.Core.User)">
+            <summary>
+            Method to authenticated user
+            </summary>
+            <param name="model"></param>
+            <returns>token for api any and information about user</returns>
+        </member>
+    </members>
+</doc>

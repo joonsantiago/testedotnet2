@@ -17,7 +17,7 @@ using LubyBackend.Services;
 
 namespace LubyBackend.Controllers
 {
-    [ApiController]
+
     [Route("v1/work-hours")]
     public class WorkHourController : BaseController
     {

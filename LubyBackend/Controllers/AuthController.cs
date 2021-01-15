@@ -3,9 +3,9 @@ using LubyBackend.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Models.Core ;
-using Repositorys.Context;
-using Repositorys.Core;
+using Models.Core;
+//using Repositorys.Context;
+//using Repositorys.Core;
 using Repositorys.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,17 +14,18 @@ using System.Threading.Tasks;
 
 namespace LubyBackend.Controllers
 {
-    [ApiController]
+
     [Route("v1/auth")]
     public class AuthController : BaseController
     {
-        public IConfiguration Configuration;
+        public IConfiguration configuration;
         private readonly IUserRepository userRepository;
+
 
         public AuthController(IUserRepository userRepository, IConfiguration configuration) : base(configuration)
         {
             this.userRepository = userRepository;
-            this.Configuration = configuration;
+            this.configuration = configuration;
         }
 
         [HttpPost]
@@ -32,17 +33,6 @@ namespace LubyBackend.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
         {
-
-            string header_encrypted = Request.Headers["encrypted"];
-            ////bool encripted = !string.IsNullOrEmpty(header_encrypted) ? bool.Parse(header_encrypted) : false;
-
-            //string hash = model.Password;
-
-            //if (!encripted)
-            //{
-            //    int workfactor = Int32.Parse(Configuration["bcrypt:workfactor"]);
-            //    hash = BCryptService.GenerateBCryptHash(hash, workfactor);
-            //}
 
             try
             {

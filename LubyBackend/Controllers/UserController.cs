@@ -15,9 +15,7 @@ using LubyBackend.Services;
 
 namespace LubyBackend.Controllers
 {
-    [ApiController]
     [Route("v1/users")]
-    [Authorize]
     public class UserController : BaseController
     {
         IUserRepository userRepository;
@@ -37,6 +35,7 @@ namespace LubyBackend.Controllers
 
         [HttpGet]
         [Route("{id}")]
+        [Authorize]
         public async Task<ActionResult<dynamic>> GetById(int id)
         {
             if (id <= 0)

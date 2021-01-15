@@ -15,7 +15,6 @@ using Microsoft.Extensions.Configuration;
 
 namespace LubyBackend.Controllers
 {
-    [ApiController]
     [Route("v1/projects")]
     public class ProjectController : BaseController
     {

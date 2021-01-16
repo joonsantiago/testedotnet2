@@ -1,0 +1,125 @@
+<div class="main-panel mt-0 ml-main-painel">
+    <div class="content-wrapper">
+        
+                        
+          <!-- Card Order off -->
+            <div class="row ">
+                <div class="col-lg-12 grid-margin">
+                  <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary mg-b3">
+                            Horas Trabalhadas
+
+                            <a id="manage01" routerLink="new" class="btn btn-success btn-sm pull-right">
+                                Novo 
+                                <i class="fa fa-plus-circle ml-1"></i>
+                            </a>
+
+                        </h3>
+                        
+                      <div class="table-responsive">
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th class="text-center">
+                                Id
+                              </th>
+                              <th class="text-center">
+                                Projeto
+                              </th>
+                              <th class="text-center">
+                                Usuário
+                              </th>
+                              <th class="text-center">
+                                Data Inicio
+                              </th>
+                              <th class="text-center">
+                                Data Fim
+                              </th>
+                              <th class="text-center">
+                                Total de horas
+                              </th>
+                              <th class="text-right">
+                                Ação
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                              <tr *ngFor="let item of listagemHora.items | paginate: { itemsPerPage: listSize, currentPage: currP, totalItems: listagemHora.totalCount, id: 'paginationApi' }">
+                                  <td class="p05-rem text-center">{{item.id}}</td>
+                                  <td class="p05-rem text-center">{{item.project.name}}</td>
+                                  <td class="p05-rem text-center">{{item.user.name}}</td>
+                                  <td class="p05-rem text-center">{{item.createdAt | date: 'dd/MM/yyyy - HH:mm'}}</td>
+                                  <td class="p05-rem text-center">{{item.finishedAt | date: 'dd/MM/yyyy - HH:mm'}}</td>
+                                  <td class="p05-rem text-center">{{item.totalTime}}</td>
+
+
+                                  <td class="p05-rem">
+                                      <div class="btn btn-danger btn-sm btn-smx ml-2 pull-right" (click)="confirmDelete(item.id)">
+                                          <i class="fa fa-trash"></i>
+                                      </div>
+                                      <a class="btn btn-dark btn-sm btn-smx ml-2 pull-right" routerLink="edit/{{item.id}}">
+                                          <i class="fa fa-edit"></i>
+                                      </a> 
+                                  </td>
+                              </tr>
+                          </tbody>
+                        </table>
+
+                        <!-- <pagination-controls (pageChange)="p = $event"></pagination-controls> -->
+
+                      </div>
+
+                      <pagination-template id=paginationApi #pT="paginationApi"
+                            (pageChange)="onPageStateChangeEvent($event)">
+                            
+                            <div class="btn-group mg-t4" role="group" aria-label="First group">
+                                
+                                <button type="button" class="btn btn-light"
+                                    *ngIf="!pT.isFirstPage()" (click)="pT.setCurrent(1)">
+                                    <i class="fa fa-angle-double-left"></i>
+                                </button>
+                                <button type="button" class="btn btn-light"
+                                    *ngIf="pT.isFirstPage()">
+                                    <i class="fa fa-angle-double-left"></i>
+                                </button>
+                            
+
+                                <div *ngFor="let page of pT.pages">
+                                    <button type="button" class="btn btn-light"
+                                         [class.active]="pT.getCurrent() === page.value" 
+                                        *ngIf="pT.getCurrent() !== page.value"
+                                        (click)="pT.setCurrent(page.value)" >
+                                        {{page.label}}
+                                    </button>
+
+                                    <button type="button" class="btn btn-light"
+                                         [class.active]="pT.getCurrent() === page.value" 
+                                        *ngIf="pT.getCurrent() === page.value" >
+                                        {{page.label}}
+                                    </button>
+                                </div>
+                                      
+                            
+                                <button type="button" class="btn btn-light"
+                                    *ngIf="!pT.isLastPage()" (click)="pT.setCurrent(pT.getLastPage())">
+                                    <i class="fa fa-angle-double-right"></i>
+                                </button>
+                                <button type="button" class="btn btn-light"
+                                    *ngIf="pT.isLastPage()">
+                                    <i class="fa fa-angle-double-right"></i>
+                                </button>
+
+                            </div>
+
+
+                      </pagination-template>
+
+                    </div>
+                  </div>
+                </div>
+            </div> 
+
+                
+    </div>
+</div>

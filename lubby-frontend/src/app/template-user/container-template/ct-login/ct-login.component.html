@@ -1,0 +1,29 @@
+<div id="LoginForm" class="mt-100">
+    <div class="container">
+        <div class="login-form">
+        <div class="main-div">
+            <div class="panel">
+           <h2>Login</h2>
+           <p>Insira seu usuário e senha</p>
+           </div>
+            <form id="Login">
+        
+                <div class="form-group">
+                    <input type="email" (input)="usuario=$event.target.value" class="form-control" id="inputEmail" placeholder="Login">        
+                </div>
+        
+                <div class="form-group">        
+                    <input type="password" (input)="senha=$event.target.value" class="form-control" id="inputPassword" placeholder="Senha">        
+                </div>
+                <div class="forgot">
+                    
+                </div>
+                <button type="button" (click)="logar()" class="btn btn-primary">Login</button>
+        
+            </form>
+            </div>
+            
+        </div>
+    </div>
+
+</div>

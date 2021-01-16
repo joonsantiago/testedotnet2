@@ -44,5 +44,14 @@ Desenvolver um serviço que seja capaz de gerar um lançamento de horas.
 - Criar um client WEB para consumir essa API 
 
 #### Identificação:
-Nome: <br/>
-E-mail: 
+Nome: Jonatas Santiago<br/>
+E-mail: jonatas.c.santiago@hotmail.com
+
+### Install front end
+
+- Na pasta do frontend executar o comando `npm install` e `ng serve`
+
+### Observações
+
+- Foi utilizado o banco de dados Mysql
+- E não foi implementado testes

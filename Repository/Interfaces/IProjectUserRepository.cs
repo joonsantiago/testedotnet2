@@ -53,5 +53,20 @@ namespace Repositorys.Interfaces
         /// <param name="userId">Get projects user</param>
         /// <returns></returns>
         List<ProjectUser> ListByUser(int userId, int projectId = 0);
+
+        /// <summary>
+        /// List all project users
+        /// </summary>
+        /// <param name="userId">Filter user id</param>
+        /// <param name="projectId">Filter project id</param>
+        /// <returns></returns>
+        List<ProjectUser> FindByProjectOrUser(int userId = 0, int projectId = 0);
+
+        /// <summary>
+        /// List user habled for vinculate at projecct
+        /// </summary>
+        /// <param name="projectId">Id project</param>
+        /// <returns></returns>
+        List<User> FindByProjecthabledUser(int projectId = 0);
     }
 }

@@ -80,5 +80,56 @@ namespace Repositorys.Core
 
             return entity.ToList();
         }
+
+        public List<ProjectUser> FindByProjectOrUser(int userId = 0, int projectId = 0)
+        {
+            var entity = from p in databaseContext.ProjectUser
+                         select new ProjectUser
+                         {
+                             Project = p.Project,
+                             ProjectId = p.ProjectId,
+                             UserId = p.UserId,
+                             User = new User
+                             {
+                                 Id = p.User.Id,
+                                 Name = p.User.Name,
+                                 Email = p.User.Email,
+                                 Login = p.User.Login,
+                                 Role = p.User.Role,
+                                 CPF = p.User.CPF
+                             }
+                         };
+
+            if (projectId > 0)
+            {
+                entity = entity.Where(x => x.ProjectId == projectId);
+            }
+
+            if (userId > 0)
+            {
+                entity = entity.Where(x => x.UserId == userId);
+            }
+
+            return entity.ToList();
+        }
+
+        public List<User> FindByProjecthabledUser(int projectId = 0)
+        {
+            List<int> list_ids = databaseContext.ProjectUser.Where(x => x.ProjectId == projectId).Select(p => p.UserId).ToList();
+
+            var entity = from p in databaseContext.User
+                         where p.Id > 0
+                         select new User
+                         {
+                             Id = p.Id,
+                             Name = p.Name,
+                             Email = p.Email,
+                             Login = p.Login,
+                             Role = p.Role,
+                             CPF = p.CPF
+                         };
+
+            return entity.Where(x => !list_ids.Contains(x.Id)).ToList();
+        }
     }
 }

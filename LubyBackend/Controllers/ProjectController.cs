@@ -15,6 +15,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace LubyBackend.Controllers
 {
+    /// <summary>
+    /// Requests for project data
+    /// </summary>
     [Route("v1/projects")]
     public class ProjectController : BaseController
     {
@@ -32,6 +35,11 @@ namespace LubyBackend.Controllers
             this.configuration = configuration;
         }
 
+        /// <summary>
+        /// Get one project by Id
+        /// </summary>
+        /// <param name="id">Id project for return</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         [Authorize]
@@ -57,6 +65,12 @@ namespace LubyBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Get the list of projects
+        /// </summary>
+        /// <param name="page">Page for find in pagination</param>
+        /// <param name="sizePage">Size of data in page</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         [Authorize]
@@ -88,6 +102,11 @@ namespace LubyBackend.Controllers
             }            
         }
 
+        /// <summary>
+        /// Create a new projeto
+        /// </summary>
+        /// <param name="project">The project object</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("")]
         [Authorize]
@@ -111,6 +130,11 @@ namespace LubyBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Update one project
+        /// </summary>
+        /// <param name="project">The project object</param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("")]
         [Authorize]
@@ -144,6 +168,11 @@ namespace LubyBackend.Controllers
 
         }
 
+        /// <summary>
+        /// Delete one projetct
+        /// </summary>
+        /// <param name="id">Id project for delete</param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
         [Authorize]

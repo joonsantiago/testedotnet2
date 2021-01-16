@@ -40,6 +40,11 @@ namespace LubyBackend.Controllers
             this.projectUserRepository = projectUserRepository;
         }
 
+        /// <summary>
+        /// Get one work user by Id
+        /// </summary>
+        /// <param name="id">Id work user for return</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         [Authorize(Roles = "1,2")]
@@ -60,7 +65,7 @@ namespace LubyBackend.Controllers
 
             try
             {
-                WorkHour data_workHour = workHourRepository.GetById(id, userId);
+                WorkHour data_workHour = workHourRepository.GetById(id);
                 if (data_workHour == null)
                 {
                     return Ok(new { success = false, data = new { }, messages = "No having workHour with the Id" });
@@ -73,6 +78,12 @@ namespace LubyBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Get the list of work user
+        /// </summary>
+        /// <param name="page">Page for find in pagination</param>
+        /// <param name="sizePage">Size of data in page</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         [Authorize(Roles = "1,2")]
@@ -89,8 +100,8 @@ namespace LubyBackend.Controllers
 
             try
             {
-                int total = workHourRepository.Count(userId);
-                List<WorkHour> list = workHourRepository.GetList(skip, sizePage, userId);
+                int total = workHourRepository.Count();
+                List<WorkHour> list = workHourRepository.GetList(skip, sizePage);
 
                 Pagination<WorkHour> dataPagination = new Pagination<WorkHour>
                 {
@@ -108,6 +119,11 @@ namespace LubyBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Create a new work user
+        /// </summary>
+        /// <param name="workHour">The work user object</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("")]
         [Authorize(Roles = "1,2")]
@@ -136,17 +152,11 @@ namespace LubyBackend.Controllers
                 validations_erro.Add("WorkHour user id is required");
             }
 
-            int userId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value);
-            int roleId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value);
+            var projectUser = projectUserRepository.ListByUser(workHour.UserId, workHour.ProjectId);
 
-            if (roleId != (int)EnumRole.Administrator)
+            if (projectUser.Count() == 0)
             {
-                var projectUser = projectUserRepository.ListByUser(userId, workHour.ProjectId);
-
-                if(projectUser == null)
-                {
-                    validations_erro.Add("User don't has vinculate to project");
-                }
+                validations_erro.Add("User don't has vinculate to project");
             }
 
             if (validations_erro.Count() > 0)
@@ -204,6 +214,11 @@ namespace LubyBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Update one work user
+        /// </summary>
+        /// <param name="workHour">The work user object</param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("")]
         [Authorize(Roles = "1,2")]
@@ -230,17 +245,11 @@ namespace LubyBackend.Controllers
                 validations_erro.Add("WorkHour user id is required");
             }
 
-            int userId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid).Value);
-            int roleId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value);
+            var projectUser = projectUserRepository.ListByUser(workHour.UserId, workHour.ProjectId);
 
-            if (roleId != (int)EnumRole.Administrator)
+            if (projectUser.Count() == 0)
             {
-                var projectUser = projectUserRepository.ListByUser(userId, workHour.ProjectId);
-
-                if (projectUser == null)
-                {
-                    validations_erro.Add("User don't has vinculate to project");
-                }
+                validations_erro.Add("User don't has vinculate to project");
             }
 
             if (validations_erro.Count() > 0)
@@ -270,6 +279,11 @@ namespace LubyBackend.Controllers
 
         }
 
+        /// <summary>
+        /// Delete one work user
+        /// </summary>
+        /// <param name="id">Id work user for delete</param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
         [Authorize(Roles = "1,2")]
@@ -290,7 +304,7 @@ namespace LubyBackend.Controllers
 
             try
             {
-                WorkHour data_workHour = workHourRepository.GetById(id, userId);
+                WorkHour data_workHour = workHourRepository.GetById(id);
                 if (data_workHour == null)
                 {
                     return Ok(new { success = false, data = new { }, messages = "No having workHour with the Id" });
@@ -304,12 +318,16 @@ namespace LubyBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Get top 5 developers
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("dev-top5-week")]
         [Authorize]
         public async Task<ActionResult<dynamic>> DevTop5Week()
         {
-            var data = workHourRepository.DevTop5Week();
+            var data = workHourRepository.DevTop5Week().OrderByDescending(x => x.TotalHours).ToList();
             return Ok(new { success = true, data = data, messages = "Item successfull calculate" });
         }
 

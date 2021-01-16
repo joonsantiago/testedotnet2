@@ -13,6 +13,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Models.Constantes;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace LubyBackend.Controllers
 {
@@ -34,6 +35,11 @@ namespace LubyBackend.Controllers
             this.configuration = configuration;
         }
 
+        /// <summary>
+        /// Get one project user by Id
+        /// </summary>
+        /// <param name="id">Id project for return</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         [Authorize]
@@ -59,6 +65,102 @@ namespace LubyBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Get users for one project user
+        /// </summary>
+        /// <param name="projectId">Id project for found</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{projectId}/users")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> GetProjectsUser(int projectId)
+        {
+            if (projectId <= 0)
+            {
+                return BadRequest(new { success = false, data = new { }, messages = "Send Id projectUser it's required" });
+            }
+
+            try
+            {
+                List<ProjectUser> data_projectUser = projectUserRepository.FindByProjectOrUser(0, projectId);
+                if (data_projectUser == null)
+                {
+                    return Ok(new { success = false, data = new { }, messages = "No having projectUser with the Id" });
+                }
+                return Ok(new { success = true, data = data_projectUser, messages = "Item successfull finded" });
+            }
+            catch (Exception ex)
+            {
+                return CatchError(ex, "Find projectUser by Id");
+            }
+        }
+
+        /// <summary>
+        /// Get users not relation a one project
+        /// </summary>
+        /// <param name="projectId">Id project for found</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{projectId}/habled-users")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> GetProjectsHabledUser(int projectId)
+        {
+            if (projectId <= 0)
+            {
+                return BadRequest(new { success = false, data = new { }, messages = "Send Id projectUser it's required" });
+            }
+
+            try
+            {
+                List<User> data_users = projectUserRepository.FindByProjecthabledUser(projectId);
+                if (data_users == null)
+                {
+                    return Ok(new { success = false, data = new { }, messages = "No having projectUser with the Id" });
+                }
+                return Ok(new { success = true, data = data_users, messages = "Item successfull finded" });
+            }
+            catch (Exception ex)
+            {
+                return CatchError(ex, "Find projectUser by Id");
+            }
+        }
+
+        /// <summary>
+        /// Get projects with relation a user
+        /// </summary>
+        /// <param name="userId">Id user for found</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{userId}/projects")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> GetUserProjects(int userId)
+        {
+            if (userId <= 0)
+            {
+                return BadRequest(new { success = false, data = new { }, messages = "Send Id projectUser it's required" });
+            }
+
+            try
+            {
+                List<ProjectUser> data_projectUser = projectUserRepository.FindByProjectOrUser(userId, 0);
+                if (data_projectUser == null)
+                {
+                    return Ok(new { success = false, data = new { }, messages = "No having projectUser with the Id" });
+                }
+                return Ok(new { success = true, data = data_projectUser, messages = "Item successfull finded" });
+            }
+            catch (Exception ex)
+            {
+                return CatchError(ex, "Find projectUser by Id");
+            }
+        }
+
+        /// <summary>
+        /// Get the list of projects
+        /// </summary>
+        /// <param name="page">Page for find in pagination</param>
+        /// <param name="sizePage">Size of data in page</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         [Authorize]
@@ -90,6 +192,11 @@ namespace LubyBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Create a new projeto user
+        /// </summary>
+        /// <param name="projectUser">The project user object</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("")]
         [Authorize]
@@ -115,7 +222,7 @@ namespace LubyBackend.Controllers
             {
                 var projectUserOlder = projectUserRepository.ListByUser(projectUser.UserId, projectUser.ProjectId);
 
-                if (projectUserOlder != null)
+                if (projectUserOlder.Count >= 1)
                 {
                     validations_erro.Add("User has vinculation to project");
                 }
@@ -138,6 +245,11 @@ namespace LubyBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Update one project user
+        /// </summary>
+        /// <param name="projectUser">The project user object</param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("")]
         [Authorize]
@@ -178,6 +290,11 @@ namespace LubyBackend.Controllers
 
         }
 
+        /// <summary>
+        /// Delete one projetct user
+        /// </summary>
+        /// <param name="id">Id project for delete</param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
         [Authorize]

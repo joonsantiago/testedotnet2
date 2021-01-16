@@ -45,12 +45,30 @@ namespace Repositorys.Core
 
         public List<WorkHour> GetList(int skip, int size, int userId = 0)
         {
-            var entity = databaseContext.WorkHour
-                .OrderByDescending(x => x.Id)
-                .Skip(skip).Take(size);
+            var entity = from wh in databaseContext.WorkHour
+                         select new WorkHour
+                         {
+                             Id = wh.Id,
+                             CreatedAt = wh.CreatedAt,
+                             FinishedAt = wh.FinishedAt,
+                             TotalTime = wh.TotalTime,
+
+                             Project = wh.Project,
+                             ProjectId = wh.ProjectId,
+                             UserId = wh.UserId,
+                             User = new User
+                             {
+                                 Id = wh.User.Id,
+                                 Name = wh.User.Name,
+                                 Email = wh.User.Email,
+                                 Login = wh.User.Login,
+                                 Role = wh.User.Role,
+                                 CPF = wh.User.CPF
+                             }
+                         };
 
             entity = userId > 0 ? entity.Where(x => x.UserId == userId) : entity;
-            return entity.ToList();
+            return entity.Skip(skip).Take(size).ToList();
         }
 
         public WorkHour GetById(int id, int userId = 0)
@@ -92,7 +110,9 @@ namespace Repositorys.Core
             List<DevTop5WeekDto> dataReturn = new List<DevTop5WeekDto>();
 
             var dateWeek = DateTime.Now.AddDays(-7);
-            var listWorks = databaseContext.WorkHour.Where(wh => wh.FinishedAt != null && wh.CreatedAt >= dateWeek && wh.FinishedAt <= DateTime.Now).ToList();
+            var today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59);
+
+            var listWorks = databaseContext.WorkHour.Where(wh => wh.FinishedAt != null && wh.CreatedAt >= dateWeek && wh.FinishedAt <= today).ToList();
 
             foreach (var lw in listWorks)
             {

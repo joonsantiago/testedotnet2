@@ -12,9 +12,13 @@ using LubyBackend.Utils;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using LubyBackend.Services;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace LubyBackend.Controllers
 {
+    /// <summary>
+    /// Requests for user data
+    /// </summary>
     [Route("v1/users")]
     public class UserController : BaseController
     {
@@ -33,6 +37,11 @@ namespace LubyBackend.Controllers
             this.urlValidateCPF = configuration["external_links:validate_cpf"];
         }
 
+        /// <summary>
+        /// Get one user by Id
+        /// </summary>
+        /// <param name="id">Id user for return</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         [Authorize]
@@ -58,6 +67,12 @@ namespace LubyBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Get the list of users
+        /// </summary>
+        /// <param name="page">Page for find in pagination</param>
+        /// <param name="sizePage">Size of data in page</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         [Authorize]
@@ -89,6 +104,11 @@ namespace LubyBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Create a new user
+        /// </summary>
+        /// <param name="user">The user object</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("")]
         [Authorize]
@@ -174,6 +194,11 @@ namespace LubyBackend.Controllers
             }
         }
 
+        /// <summary>
+        /// Update one user
+        /// </summary>
+        /// <param name="user">The user object</param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("")]
         [Authorize]
@@ -207,7 +232,7 @@ namespace LubyBackend.Controllers
                 validations_erro.Add("User role is required");
             }
 
-            if (!string.IsNullOrEmpty(user.Login) || !string.IsNullOrEmpty(user.Password))
+            if (!string.IsNullOrEmpty(user.Password))
             {
                 if( !(!string.IsNullOrEmpty(user.Login) && !string.IsNullOrEmpty(user.Password)))
                 {
@@ -229,13 +254,13 @@ namespace LubyBackend.Controllers
                 }
 
                 var older_user_cpf = userRepository.GetUser(user.CPF);
-                if (older_user_cpf != null)
+                if (older_user_cpf != null && older_user_cpf.Id != user.Id)
                 {
                     validations_erro.Add("Already exists user with this CPF");
                 }
 
                 var older_user_login = userRepository.GetUserLogin(user.Login);
-                if (older_user_login != null)
+                if (older_user_login != null && older_user_cpf.Id != user.Id)
                 {
                     validations_erro.Add("Already exists user with this Login");
                 }
@@ -265,6 +290,11 @@ namespace LubyBackend.Controllers
 
         }
 
+        /// <summary>
+        /// Delete one projetct
+        /// </summary>
+        /// <param name="id">Id user for delete</param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
         [Authorize]

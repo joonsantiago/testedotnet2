@@ -13,5 +13,8 @@ namespace Models.Core
         public decimal? TotalTime { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? FinishedAt { get; set; }
+
+        public virtual Project Project { get; set; }
+        public virtual User User { get; set; }
     }
 }

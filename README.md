@@ -55,3 +55,6 @@ E-mail: jonatas.c.santiago@hotmail.com
 
 - Foi utilizado o banco de dados Mysql
 - E não foi implementado testes
+- Para realizar o login, utilize as seguintes credenciais
+- **usuário:** luby
+- **senha:** 12345
